@@ -17,11 +17,13 @@ ll x_max = 1e6 + 5;
 struct LiChao {
   v<Line> seg;
   ll sz = 1;
+
   LiChao(ll n) {
     for (; sz < x_max; sz *= 2)
       ;
     seg.resize(2 * sz, {0, -inf});
   }
+
 
   void insert(ll i, ll l, ll r, ll a, ll b, Line add) {
     if (l > b || r < a)
@@ -32,16 +34,21 @@ struct LiChao {
       if (seg[i].f(mid) < add.f(mid)) {
         swap(seg[i], add);
       }
+      
       if (l == r)
         return;
+      
       if (seg[i].f(l) < add.f(l)) {
         insert(i * 2, l, mid, a, b, add);
       }
+      
       if (seg[i].f(r) < add.f(r)) {
         insert(i * 2 + 1, mid + 1, r, a, b, add);
       }
+      
       return;
     }
+    
     insert(i * 2, l, mid, a, b, add);
     insert(i * 2 + 1, mid + 1, r, a, b, add);
   }
@@ -51,37 +58,12 @@ struct LiChao {
     ll res = seg[i].f(x);
     if (l == r)
       return res;
+    
     ll mid = (l + r) / 2;
+    
     if (x <= mid)
       return max(res, query(i << 1, l, mid, x));
     else
       return max(res, query(i << 1 | 1, mid + 1, r, x));
   }
 };
-
-int main() {
-  ios_base::sync_with_stdio(0);
-  cin.tie(0);
-  ll n;
-  cin >> n;
-  LiChao lct(x_max);
-
-  lp(i, 0, n) {
-    ll tp;
-    cin >> tp;
-    if (tp == 1) {
-      ll a, b, l, r;
-      cin >> a >> b >> l >> r;
-      Line ed = {a, b};
-      lct.insert(ed, l, r);
-    } else {
-      ll x;
-      cin >> x;
-      ll ans = lct.query(1, 0, x_max, x);
-      if (ans == -inf)
-        cout << "NO\n";
-      else
-        cout << ans << "\n";
-    }
-  }
-}
