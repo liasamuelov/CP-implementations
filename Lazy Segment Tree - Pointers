@@ -29,7 +29,6 @@ struct Seg {
       return;
 
     sum += (r - l + 1) * lazy;
-
     ensure();
 
     if (l != r) {
@@ -49,7 +48,6 @@ struct Seg {
       return 0;
 
     ensure();
-
     return (left->q(a, b) + right->q(a, b));
   }
 
@@ -66,7 +64,6 @@ struct Seg {
     }
 
     ensure();
-
     left->add(a, b, V), right->add(a, b, V);
     sum = left->sum + right->sum;
   }
