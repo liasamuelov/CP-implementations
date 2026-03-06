@@ -1,0 +1,73 @@
+//
+// Created by liasa on 06/03/2026.
+//
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define v vector
+#define lp(i, s, e) for (ll i = s; i < e; ++i)
+
+struct Seg {
+
+  Seg *left = nullptr, *right = nullptr;
+  int l, r, mid;
+  ll sum = 0, lazy = 0;
+
+  Seg(int l, int r) : l(l), r(r), mid((l + r) / 2) {}
+
+  void ensure() {
+    if (l == r)
+      return;
+    if (left == nullptr) {
+      left = new Seg(l, mid);
+      right = new Seg(mid + 1, r);
+    }
+  }
+
+  void push() {
+    if (lazy == 0)
+      return;
+
+    sum += (r - l + 1) * lazy;
+
+    ensure();
+
+    if (l != r) {
+      left->lazy += lazy;
+      right->lazy += lazy;
+    }
+    lazy = 0;
+  }
+
+  ll q(int a, int b) {
+    push();
+
+    if (l >= a && r <= b)
+      return sum;
+
+    if (l > b || r < a)
+      return 0;
+
+    ensure();
+
+    return (left->q(a, b) + right->q(a, b));
+  }
+
+  void add(int a, int b, int V) {
+    push();
+
+    if (l > b || r < a)
+      return;
+
+    if (l >= a && r <= b) {
+      lazy += V;
+      push();
+      return;
+    }
+
+    ensure();
+
+    left->add(a, b, V), right->add(a, b, V);
+    sum = left->sum + right->sum;
+  }
+};
